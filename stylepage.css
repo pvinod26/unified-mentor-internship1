@@ -1,0 +1,80 @@
+ :root {
+            --bg: #FFFDF5; --card-bg: #FFFFFF; --header-bg: #FFFFFF; --text: #0F172A; --border: #f1f1f1;
+            --royal: #0F172A; --gold: #B45309; --saffron: #F59E0B; --white: #FFFFFF; 
+            --danger: #EF4444; --success: #10B981; --gray: #64748b; --modal-overlay: rgba(15, 23, 42, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg: #0F172A; --card-bg: #1E293B; --header-bg: #1E293B; --text: #F1F5F9; --border: #334155;
+            --modal-overlay: rgba(0, 0, 0, 0.98);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        
+        header {
+            background: var(--header-bg); padding: 15px 8%; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;
+        }
+        
+        .nav-controls { display: flex; gap: 15px; align-items: center; }
+        .theme-toggle { background: var(--gold); border: none; padding: 8px 15px; border-radius: 20px; color: white; cursor: pointer; font-weight: 600; font-size: 0.8rem; }
+
+        .hero {
+            height: 40vh; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+            url("https://thumbs.dreamstime.com/b/great-indian-architecture-religious-art-gods-pantheon-temple-gopuram-tower-facade-ancient-colorful-statues-mahabharata-153726960.jpg");
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center;
+        }
+       
+.gallery-thumb:hover { transform: scale(1.05); border-color: var(--gold); }
+        .main-container { padding: 0 8% 50px; margin-top: -60px; }
+        .glass-panel {
+            background: var(--card-bg); padding: 30px; border-radius: 15px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid var(--border);
+            display: grid; grid-template-columns: 2fr 1fr 150px; gap: 15px; margin-bottom: 40px;
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+        .temple-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; transition: all 0.4s ease; cursor: pointer; position: relative; border: 1px solid var(--border); }
+        .temple-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
+        .card-img { height: 250px; width: 100%; object-fit: cover; }
+        .card-content { padding: 25px; }
+
+        .weather-badge { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); color: #000; padding: 5px 12px; border-radius: 30px; font-size: 11px; font-weight: 700; }
+        .crowd-indicator { position: absolute; top: 15px; left: 15px; padding: 6px 14px; border-radius: 30px; color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-overlay); z-index: 2000; padding: 20px; overflow-y: auto; }
+        .modal-inner { background: var(--card-bg); max-width: 1250px; margin: auto; border-radius: 25px; overflow: hidden; display: flex; flex-direction: column; animation: slideUp 0.4s ease; }
+        
+        .modal-grid { display: grid; grid-template-columns: 1fr 400px; }
+        .modal-left { padding: 40px; }
+        .modal-right { background: rgba(0,0,0,0.02); padding: 40px; border-left: 1px solid var(--border); }
+
+        .tabs { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 2px solid var(--border); }
+        .tab-item { padding: 15px 0; cursor: pointer; font-weight: 700; color: var(--gray); font-family: 'Cinzel'; position: relative; }
+        .tab-item.active { color: var(--gold); }
+        .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background: var(--gold); }
+
+        .ritual-container { display: flex; flex-direction: column; gap: 10px; }
+        .ritual-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); }
+        .ritual-active { background: rgba(245, 158, 11, 0.08); border: 1px solid var(--saffron); }
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; background: var(--saffron); display: inline-block; animation: pulse 1.5s infinite; margin-right: 8px; }
+        
+        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.7; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.7; } }
+
+        .close-btn { position: fixed; top: 30px; right: 40px; font-size: 40px; color: white; cursor: pointer; z-index: 2100; }
+        .btn-toggle-day { background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 700; font-size: 0.85rem; }
+        .btn-toggle-day.active { background: var(--gold); color: white; }
+
+        input, select { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 12px; border-radius: 8px; width: 100%; font-family: inherit; }
+        .btn-divine { background: var(--gold); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 700; letter-spacing: 1px; }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @media (max-width: 900px) {
+            .modal-grid { grid-template-columns: 1fr; }
+            .modal-right { border-left: none; border-top: 1px solid var(--border); }
+            .glass-panel { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+        }
+    

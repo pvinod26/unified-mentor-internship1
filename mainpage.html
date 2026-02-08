@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bharat Heritage | The Divine Ecosystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FFFDF5; --card-bg: #FFFFFF; --header-bg: #FFFFFF; --text: #0F172A; --border: #f1f1f1;
+            --royal: #0F172A; --gold: #B45309; --saffron: #F59E0B; --white: #FFFFFF; 
+            --danger: #EF4444; --success: #10B981; --gray: #64748b; --modal-overlay: rgba(15, 23, 42, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg: #0F172A; --card-bg: #1E293B; --header-bg: #1E293B; --text: #F1F5F9; --border: #334155;
+            --modal-overlay: rgba(0, 0, 0, 0.98);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        
+        header {
+            background: var(--header-bg); padding: 15px 8%; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;
+        }
+        
+        .nav-controls { display: flex; gap: 15px; align-items: center; }
+        .theme-toggle { background: var(--gold); border: none; padding: 8px 15px; border-radius: 20px; color: white; cursor: pointer; font-weight: 600; font-size: 0.8rem; }
+
+        .hero {
+            height: 40vh; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+            url("https://thumbs.dreamstime.com/b/great-indian-architecture-religious-art-gods-pantheon-temple-gopuram-tower-facade-ancient-colorful-statues-mahabharata-153726960.jpg");
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center;
+        }
+       
+.gallery-thumb:hover { transform: scale(1.05); border-color: var(--gold); }
+        .main-container { padding: 0 8% 50px; margin-top: -60px; }
+        .glass-panel {
+            background: var(--card-bg); padding: 30px; border-radius: 15px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid var(--border);
+            display: grid; grid-template-columns: 2fr 1fr 150px; gap: 15px; margin-bottom: 40px;
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+        .temple-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; transition: all 0.4s ease; cursor: pointer; position: relative; border: 1px solid var(--border); }
+        .temple-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
+        .card-img { height: 250px; width: 100%; object-fit: cover; }
+        .card-content { padding: 25px; }
+
+        .weather-badge { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); color: #000; padding: 5px 12px; border-radius: 30px; font-size: 11px; font-weight: 700; }
+        .crowd-indicator { position: absolute; top: 15px; left: 15px; padding: 6px 14px; border-radius: 30px; color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-overlay); z-index: 2000; padding: 20px; overflow-y: auto; }
+        .modal-inner { background: var(--card-bg); max-width: 1250px; margin: auto; border-radius: 25px; overflow: hidden; display: flex; flex-direction: column; animation: slideUp 0.4s ease; }
+        
+        .modal-grid { display: grid; grid-template-columns: 1fr 400px; }
+        .modal-left { padding: 40px; }
+        .modal-right { background: rgba(0,0,0,0.02); padding: 40px; border-left: 1px solid var(--border); }
+
+        .tabs { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 2px solid var(--border); }
+        .tab-item { padding: 15px 0; cursor: pointer; font-weight: 700; color: var(--gray); font-family: 'Cinzel'; position: relative; }
+        .tab-item.active { color: var(--gold); }
+        .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background: var(--gold); }
+
+        .ritual-container { display: flex; flex-direction: column; gap: 10px; }
+        .ritual-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); }
+        .ritual-active { background: rgba(245, 158, 11, 0.08); border: 1px solid var(--saffron); }
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; background: var(--saffron); display: inline-block; animation: pulse 1.5s infinite; margin-right: 8px; }
+        
+        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.7; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.7; } }
+
+        .close-btn { position: fixed; top: 30px; right: 40px; font-size: 40px; color: white; cursor: pointer; z-index: 2100; }
+        .btn-toggle-day { background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 700; font-size: 0.85rem; }
+        .btn-toggle-day.active { background: var(--gold); color: white; }
+
+        input, select { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 12px; border-radius: 8px; width: 100%; font-family: inherit; }
+        .btn-divine { background: var(--gold); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 700; letter-spacing: 1px; }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @media (max-width: 900px) {
+            .modal-grid { grid-template-columns: 1fr; }
+            .modal-right { border-left: none; border-top: 1px solid var(--border); }
+            .glass-panel { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+        }
+    
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 style="font-family: 'Cinzel'; letter-spacing: 2px;">BHARAT HERITAGE</h1>
+    <div class="nav-controls">
+        <div id="live-clock" style="font-weight: 600; color: var(--gold); font-size: 0.9rem;"></div>
+        <button class="theme-toggle" onclick="app.toggleTheme()" id="themeBtn">🌙 DARK MODE</button>
+    </div>
+</header>
+
+<section class="hero">
+    <h2 style="font-family: 'Cinzel'; font-size: 3.5rem; margin-bottom: 10px;">The Soul of India</h2>
+    <p style="letter-spacing: 3px; font-weight: 300;">DIVINE ECOSYSTEM & HERITAGE GUIDE</p>
+</section>
+
+<div class="main-container">
+    <div class="glass-panel">
+        <input type="text" id="searchInput" placeholder="Search Temples (e.g. Kedarnath, Somnath)..." oninput="app.filter()">
+        <select id="stateFilter" onchange="app.filter()">
+            <option value="">All Regions</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Assam">Assam</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Himachal Pradesh">Himachal Pradesh</option>
+            <option value="Jammu & Kashmir">Jammu & Kashmir</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Odisha">Odisha</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Uttarakhand">Uttarakhand</option>
+            <option value="West Bengal">West Bengal</option>
+        </select>
+        <button class="btn-divine" onclick="app.filter()">SEARCH</button>
+    </div>
+    <div class="grid" id="templeGrid"></div>
+</div>
+
+<div class="modal" id="templeModal">
+    <span class="close-btn" onclick="app.close()">×</span>
+    <div class="modal-inner" id="modalBody"></div>
+</div>
+
+<script>
+    const app = {
+        userPos: { lat: 28.6139, lon: 77.2090 },
+        activeTemple: null,
+        data: [
+            {
+                id: 1, name: "Tirumala Venkateswara", state: "Andhra Pradesh", coords: { lat: 13.6833, lon: 79.3500 },
+                img: "https://images.hindustantimes.com/img/2021/12/27/550x309/541e464c-1b79-11ec-8372-9724726ad21c_1632297094341_1640583111443.jpg",
+                gallery: [
+                    "https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2022/05/hauer-do-1653996233.jpg",
+                    "https://archives.vsktelangana.org/wp-content/uploads/2017/04/Female-barbers-in-Hindu-Temple-Thirumala.jpg",
+                ],
+                history: "Known as 'Kaliyuga Vaikuntam,' this is the residence of Lord Venkateswara, who appeared here to save mankind from the trials of Kali Yuga. Legend says the Lord resides here until his debt to Kubera—borrowed for his wedding with Padmavati—is fully paid back by the offerings of devotees.",
+    specials: "The temple's unique 'Laddu Prasadam' is world-famous, holding a GI tag for its secret recipe. It is also the global center for 'Kalyana Katta' (hair tonsuring), where 50,000+ devotees daily offer their hair as a symbol of surrendering the ego to the Divine.",
+    architecture: "Classic Dravidian style featuring the 'Ananda Nilayam'—a three-tier gold-plated Vimana over the Garbhagriha. The temple complex is built on Venkatadri, one of the seven peaks of Seshachalam, designed to resemble the seven hoods of Adisesha.",
+    wait: 12, weather: "☀️ 26°C", 
+    stay: "TTD Cottages (Srinivasam, Vishnu Nivasam) and luxury options like Fortune Select Grand Ridge.", 
+    eat: "The 'Matrusree Tarigonda Vengamamba Annaprasadam Hall' is the world's largest free dining hall, serving satvik meals to thousands hourly.",
+     wisdom: ["Dhoti/Saree mandatory", "Register for 'SRIVARI SEVA' online", "No plastic allowed on the hill"],
+              rituals: [
+    { 
+        name: "Suprabhatam", 
+        time: "03:00 AM - 03:30 AM", 
+    },
+    { 
+        name: "Thomala Seva", 
+        time: "04:30 AM - 05:00 AM", 
+    },
+    { 
+        name: "Kalyanotsavam", 
+        time: "10:30 AM - 12:00 PM", 
+    },
+    { 
+        name: "Sahasra Deepalankarana", 
+        time: "05:30 PM - 06:30 PM", 
+    },
+    { 
+        name: "Ekanta Seva", 
+        time: "11:30 PM", 
+    }
+],
+             plan: { 
+    1: [
+        "03:00 AM - Entry at Vaikuntam Queue Complex (Report with ID)", 
+        "06:00 AM - Talaneelaalu at Main Kalyanakatta (Hair offering Ritual)", 
+        "10:00 AM - Mukhya Darshan of Lord Venkateswara (Sanctum Entry)", 
+        "01:00 PM - Sacred Lunch at Matrusree Annaprasadam Hall",
+        "03:00 PM - Laddu Collection & Visit to Srivari Museum",
+        "06:00 PM - Sahasra Deepalankarana Seva (Unjal Mandapam)"
+    ], 
+    2: [
+        "Day 1: Arrival & Alipiri Metlu Trek (3550 steps) for Spiritual Start", 
+        "Day 2: Morning Darshan & Talaneelaalu ritual & Local Sightseeing (Akasa Ganga, Papavinasam, Silathoranam)"
+    ] 
+}
+             },
+            {
+                id: 2, name: "Kashi Vishwanath", state: "Uttar Pradesh", coords: { lat: 25.3109, lon: 83.0107 },
+                img: "https://media.mahakumbh.in/media/2025/12/15144400/kashi-vishwanath.webp",
+                history: "One of the 12 Jyotirlingas, located on the banks of the holy Ganga.",
+                architecture: "Nagara style with golden towers rebuilt by Ahilyabai Holkar.",
+                wait: 3, weather: "Loading...", stay: "Brijrama Palace", eat: "Blue Lassi Shop",
+                rituals: [{ name: "Mangala Aarti", time: "03:00 AM", active: false }, { name: "Shayya Aarti", time: "10:30 PM", active: true }],
+                plan: { 1: ["04:00 AM - Ganga Snan", "07:00 AM - Darshan"], 2: ["Day 1: Aarti", "Day 2: Sarnath"] }
+            },
+            {
+                id: 3, name: "Kedarnath Temple", state: "Uttarakhand", coords: { lat: 30.7352, lon: 79.0669 },
+                img: "https://traveltonirvana.com/wp-content/uploads/2023/10/Untitled-design-2048x1152-1.png",
+                history: "Himalayan shrine dedicated to Shiva, part of the Char Dham.",
+                architecture: "Built of massive grey stone slabs in the Katyuri style.",
+                wait: 5, weather: "Loading...", stay: "GMVN Camps", eat: "Local Bhandaras",
+                rituals: [{ name: "Morning Puja", time: "04:00 AM", active: false }, { name: "Evening Aarti", time: "06:30 PM", active: true }],
+                plan: { 1: ["04:00 AM - Trek start", "Darshan"], 2: ["Day 1: Base", "Day 2: Temple"] }
+            },
+            {
+                id: 4, name: "Golden Temple", state: "Punjab", coords: { lat: 31.6200, lon: 74.8765 },
+                img: "https://images.unsplash.com/photo-1514222134-b57cbb8ce073?q=80&w=2000",
+                history: "The holiest Gurdwara of Sikhism, representing equality and service.",
+                architecture: "Blend of Indo-Islamic and Hindu architecture, plated with gold.",
+                wait: 2, weather: "Loading...", stay: "Niwas Rooms", eat: "Langar Hall",
+                rituals: [{ name: "Palki Sahib", time: "04:00 AM", active: true }, { name: "Rehras Sahib", time: "06:00 PM", active: false }],
+                plan: { 1: ["Darshan", "Volunteer at Langar"], 2: ["Day 1: Harmandir", "Day 2: Jallianwala"] }
+            },
+            {
+                id: 5, name: "Meenakshi Amman", state: "Tamil Nadu", coords: { lat: 9.9195, lon: 78.1193 },
+                img: "https://i0.wp.com/kidsnews.top/wp-content/uploads/2021/12/Meenakshi-Amman-Temple-Wikipedia.jpg?fit=1200%2C898&ssl=1",
+                history: "Dedicated to Meenakshi (Parvati) and Sundareswarar (Shiva).",
+                architecture: "Dravidian masterpiece with 14 colorful gateway gopurams.",
+                wait: 2, weather: "Loading...", stay: "Heritage Madurai", eat: "Madurai Mess",
+                rituals: [{ name: "Morning Puja", time: "05:00 AM", active: true }, { name: "Night Ceremony", time: "09:00 PM", active: false }],
+                plan: { 1: ["Gopuram Tour", "Pooja"], 2: ["Day 1: Temple", "Day 2: Palace"] }
+            },
+            {
+                id: 6, name: "Somnath Temple", state: "Gujarat", coords: { lat: 20.8880, lon: 70.4012 },
+                img: "https://i.ytimg.com/vi/K8TBE3HDrgc/maxresdefault.jpg",
+                history: "The 'Eternal Shrine', the first of the twelve Jyotirlingas.",
+                architecture: "Chaulukya style by the shore of the Arabian Sea.",
+                wait: 1, weather: "Loading...", stay: "Lords Inn", eat: "Somnath Prasad",
+                rituals: [{ name: "Aarti", time: "07:00 AM", active: true }, { name: "Sound Show", time: "08:00 PM", active: false }],
+                plan: { 1: ["Beach Walk", "Darshan"], 2: ["Day 1: Temple", "Day 2: Gir Safari"] }
+            },
+            {
+                id: 7, name: "Jagannath Puri", state: "Odisha", coords: { lat: 19.8049, lon: 85.8178 },
+                img: "https://s7ap1.scene7.com/is/image/incredibleindia/sri-jagannath-temple-puri-odisha-1-attr-hero?qlt=82&ts=1726663747217.jpg",
+                history: "Home of the Lord of the Universe, famous for the Rath Yatra.",
+                architecture: "Kalinga architecture with the Nilachakra on top.",
+                wait: 4, weather: "Loading...", stay: "Mayfair Waves", eat: "Mahaprasad",
+                rituals: [{ name: "Dwarapala Puja", time: "05:00 AM", active: true }, { name: "Dhupa", time: "07:00 PM", active: false }],
+                plan: { 1: ["Beach Snan", "Darshan"], 2: ["Day 1: Puri", "Day 2: Konark"] }
+            },
+            {
+                id: 8, name: "Padmanabhaswamy", state: "Kerala", coords: { lat: 8.4827, lon: 76.9436 },
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkkHgjitF7wBhTycwc0ApXestVemMUqP60Ng&s.jpg",
+                history: "The richest temple in the world, holding massive gold treasures.",
+                architecture: "Blend of Chera and Dravidian temple styles.",
+                wait: 3, weather: "Loading...", stay: "Vivanta", eat: "Kerala Sadya",
+                rituals: [{ name: "Deeparadhana", time: "06:30 PM", active: true }, { name: "Pooja", time: "03:30 AM", active: false }],
+                plan: { 1: ["Traditional Wear", "Darshan"], 2: ["Day 1: Temple", "Day 2: Kovalam"] }
+            },
+            {
+                id: 9, name: "Kamakhya Temple", state: "Assam", coords: { lat: 26.1663, lon: 91.7052 },
+                img: "https://northeastvibes.com/wp-content/uploads/2025/01/kamkhaya-temple-tour.png",
+                history: "Ancient Shakti Peeth atop Nilachal Hill, dedicated to Goddess Kamakhya.",
+                architecture: "Distinctive beehive-shaped dome (Nilachal style).",
+                wait: 5, weather: "Loading...", stay: "Radisson Guwahati", eat: "Assamese Thali",
+                rituals: [{ name: "Morning Puja", time: "05:30 AM", active: true }, { name: "Aarti", time: "06:00 PM", active: false }],
+                plan: { 1: ["Hill Climb", "Darshan"], 2: ["Day 1: Temple", "Day 2: Brahmaputra Cruise"] }
+            },
+            {
+                id: 10, name: "Sabarimala", state: "Kerala", coords: { lat: 9.4404, lon: 77.0818 },
+                img: "https://hindutone.com/wp-content/uploads/2025/11/Sabarimala-Yatra-Complete-Guide.jpg",
+                history: "Devoted to Ayyappa, known for the 41-day vratham.",
+                architecture: "Copper-roofed sanctum with 18 golden steps.",
+                wait: 10, weather: "Loading...", stay: "Pamba Camp", eat: "Appam/Aravana",
+                rituals: [{ name: "Neyyabhishekam", time: "04:00 AM", active: true }, { name: "Harivarasanam", time: "11:00 PM", active: false }],
+                plan: { 1: ["Pamba Bath", "Trek"], 2: ["Day 1: Base", "Day 2: Sannidhanam"] }
+            },
+            {
+                id: 11, name: "Dakshineswar Kali", state: "West Bengal", coords: { lat: 22.6548, lon: 88.3575 },
+                img: "https://cdn.britannica.com/54/171154-050-7FFEE38A/Dakshineshwar-Kali-Temple-India.jpg",
+                history: "Associated with Ramakrishna Paramahamsa and Rani Rashmoni.",
+                architecture: "Nava-ratna (nine-spire) style on the Hooghly riverbank.",
+                wait: 2, weather: "Loading...", stay: "ITC Sonar", eat: "Bengali Thali",
+                rituals: [{ name: "Bhog Offering", time: "12:00 PM", active: true }, { name: "Evening Aarti", time: "07:00 PM", active: false }],
+                plan: { 1: ["Ganga Ghat", "Darshan"], 2: ["Day 1: Temple", "Day 2: Kolkata Sightseeing"] }
+            },
+            {
+                id: 12, name: "Vithoba Temple", state: "Maharashtra", coords: { lat: 17.6744, lon: 75.3283 },
+                img: "https://www.trawell.in/admin/images/upload/593911791Vittala-temple.jpg",
+                history: "The center of the Varkari movement in Pandharpur.",
+                architecture: "Traditional Deccan style with massive courtyards.",
+                wait: 15, weather: "Loading...", stay: "Pandharpur Math", eat: "Zunka Bhakar",
+                rituals: [{ name: "Pooja", time: "04:00 AM", active: true }, { name: "Aarti", time: "07:00 PM", active: false }],
+                plan: { 1: ["Chandrabhaga Bath", "Darshan"], 2: ["Day 1: River", "Day 2: Mukhdarshan"] }
+            },
+            {
+                id: 13, name: "Khajuraho Temples", state: "Madhya Pradesh", coords: { lat: 24.8318, lon: 79.9199 },
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGFRBl8QaaXF9oUNqFvQf0DM00Dz9pCEizFQ&s.jpg",
+                history: "UNESCO site built by Chandela rulers, famous for erotic carvings.",
+                architecture: "Nagara style with intricate sandstone carvings.",
+                wait: 1, weather: "Loading...", stay: "The Lalit", eat: "Bundeli Cuisine",
+                rituals: [{ name: "Museum Tour", time: "09:00 AM", active: true }, { name: "Light Show", time: "07:00 PM", active: false }],
+                plan: { 1: ["Western Group", "Eastern Group"], 2: ["Day 1: Temples", "Day 2: Panna Tiger Reserve"] }
+            },
+            {
+                id: 14, name: "Murudeshwar", state: "Karnataka", coords: { lat: 14.0941, lon: 74.4849 },
+                img: "https://kalavadyfarmstay.com/wp-content/uploads/2021/10/Mahashivratri-Murudeshwara-shutterstock_276471710.webp",
+                history: "Known for the world's second-tallest Shiva statue.",
+                architecture: "Sea-side temple with a massive Raja Gopura.",
+                wait: 2, weather: "Loading...", stay: "RNS Residency", eat: "Coastal Veg Food",
+                rituals: [{ name: "Puja", time: "06:00 AM", active: true }, { name: "Prasadam", time: "12:00 PM", active: false }],
+                plan: { 1: ["Statue View", "Darshan"], 2: ["Day 1: Temple", "Day 2: Gokarna"] }
+            },
+            {
+                id: 15, name: "Yadadri Temple", state: "Telangana", coords: { lat: 17.5889, lon: 78.9482 },
+                img: "https://www.jsrgroupsuncity.com/assets/blog/nov/3.png",
+                history: "Recently reconstructed cave temple of Narasimha Swamy.",
+                architecture: "Magnificent black granite Dravidian style.",
+                wait: 4, weather: "Loading...", stay: "Haritha Hill", eat: "Temple Annadanam",
+                rituals: [{ name: "Kalyanam", time: "09:00 AM", active: true }, { name: "Nitya Puja", time: "06:00 AM", active: false }],
+                plan: { 1: ["Cave Darshan", "Hill Drive"], 2: ["Day 1: Temple", "Day 2: Hyderabad Tour"] }
+            },
+            {
+                id: 16, name: "Karni Mata", state: "Rajasthan", coords: { lat: 27.7912, lon: 73.3409 },
+                img: "https://temple.yatradham.org/public/Product/temple/temple_8FkPF9fF_202507021559330.webp",
+                history: "The 'Temple of Rats', where thousands of rats are worshipped.",
+                architecture: "Ornate silver doors and white marble facade.",
+                wait: 1, weather: "Loading...", stay: "Bikaner Heritage", eat: "Rajasthani Thali",
+                rituals: [{ name: "Morning Aarti", time: "05:00 AM", active: true }, { name: "Bhog", time: "01:00 PM", active: false }],
+                plan: { 1: ["Temple Tour", "Bikaner"], 2: ["Day 1: Karni Mata", "Day 2: Junagarh Fort"] }
+            },
+            {
+                id: 17, name: "Mundeshwari", state: "Bihar", coords: { lat: 25.0205, lon: 83.5654 },
+                img: "https://static.toiimg.com/thumb/msid-123161719,width-1280,height-720,resizemode-4/123161719.jpg",
+                history: "Considered the oldest functional temple in India (108 AD).",
+                architecture: "Rare octagonal stone structure.",
+                wait: 1, weather: "Loading...", stay: "Varanasi Stay", eat: "Sattu Paratha",
+                rituals: [{ name: "Pooja", time: "07:00 AM", active: true }, { name: "Prasad", time: "12:00 PM", active: false }],
+                plan: { 1: ["Hill Climb", "Ancient Darshan"], 2: ["Day 1: Temple", "Day 2: Sarnath"] }
+            },
+            {
+                id: 18, name: "Amarnath Cave", state: "Jammu & Kashmir", coords: { lat: 34.2157, lon: 75.5034 },
+                img: "https://www.tourmyindia.com/states/jammu-kashmir/image/amarnath-cave-temple1.jpg",
+                history: "Holy cave containing an ice stalagmite Shiva Lingam.",
+                architecture: "Natural glacial cave in the high Himalayas.",
+                wait: 20, weather: "Loading...", stay: "Baltal Tents", eat: "Langar Food",
+                rituals: [{ name: "Darshan", time: "Morning", active: true }, { name: "Yatra", time: "Seasonal", active: false }],
+                plan: { 1: ["Helicopter Trip", "Darshan"], 2: ["Day 1: Base", "Day 2: Cave Trek"] }
+            }
+        ],
+
+        async init() { 
+            this.startClock(); 
+            await this.updateWeather();
+            this.renderGrid(this.data); 
+        },
+
+        async updateWeather() {
+            for (let temple of this.data) {
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${temple.coords.lat}&longitude=${temple.coords.lon}&current_weather=true`);
+                    const d = await res.json();
+                    const temp = Math.round(d.current_weather.temperature);
+                    temple.weather = `☀️ ${temp}°C`;
+                } catch (e) { temple.weather = "Sunny, 28°C"; }
+            }
+        },
+
+        toggleTheme() {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeBtn').innerText = isDark ? '🌙 DARK MODE' : '☀️ LIGHT MODE';
+        },
+
+        startClock() { 
+            setInterval(() => { 
+                document.getElementById('live-clock').innerText = new Date().toLocaleString('en-IN', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' }); 
+            }, 1000); 
+        },
+
+        calculateDist(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2-lat1) * Math.PI/180; const dLon = (lon2-lon1) * Math.PI/180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+        },
+
+        renderGrid(list) {
+            document.getElementById('templeGrid').innerHTML = list.map(t => {
+                const dist = this.calculateDist(this.userPos.lat, this.userPos.lon, t.coords.lat, t.coords.lon);
+                return `
+                <div class="temple-card" onclick="app.open(${t.id})">
+                    <div class="crowd-indicator" style="background:${t.wait > 5 ? 'var(--danger)' : 'var(--success)'}">${t.wait}hr Wait</div>
+                    <div class="weather-badge">${t.weather}</div>
+                    <img src="${t.img}" class="card-img">
+                    <div class="card-content">
+                        <small style="color:var(--gold); font-weight:700">${t.state.toUpperCase()}</small>
+                        <h3 style="font-family:Cinzel; margin:5px 0;">${t.name}</h3>
+                        <p style="font-size:0.85rem; color:var(--gray)">📍 ${dist} km away</p>
+                    </div>
+                </div>`;
+            }).join('');
+        },
+
+        open(id) {
+            const t = this.data.find(x => x.id === id);
+            this.activeTemple = t;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="height:350px; background:url('${t.img}') center/cover; position:relative">
+                    <div style="position:absolute; bottom:0; left:0; right:0; padding:40px; background:linear-gradient(transparent, var(--card-bg))">
+                        <h2 style="font-family:Cinzel; font-size:2.8rem; color:var(--gold)">${t.name}</h2>
+                    </div>
+                </div>
+                <div class="modal-grid">
+                    <div class="modal-left">
+                        <div class="tabs">
+                            <div class="tab-item active" onclick="app.tab(this, 'over')">OVERVIEW</div>
+                            <div class="tab-item" onclick="app.tab(this, 'plan')">PLANNER</div>
+                            <div class="tab-item" onclick="app.tab(this, 'ritual')">RITUALS</div>
+                        </div>
+                        <div id="over-view">
+                            <h4 style="font-family:Cinzel; color:var(--gold); margin-bottom:10px">Historical Legacy</h4><p>${t.history}</p>
+                            <h4 style="font-family:Cinzel; color:var(--gold); margin:20px 0 10px">Architecture</h4><p>${t.architecture}</p>
+                        </div>
+                        <div id="plan-view" style="display:none">
+                            <div style="margin-bottom:20px; display:flex; gap:10px">
+                                <button class="btn-toggle-day active" id="btn-1day" onclick="app.setDay(1)">1-DAY EXPRESS</button>
+                                <button class="btn-toggle-day" id="btn-2day" onclick="app.setDay(2)">2-DAY LEISURE</button>
+                            </div>
+                            <div id="itinerary-box" style="border-left:2px solid var(--gold); padding-left:20px"></div>
+                        </div>
+                        <div id="ritual-view" style="display:none">
+                            <h4 style="font-family:Cinzel; color:var(--gold); margin-bottom:20px">🔔 Ritual Timings</h4>
+                            <div class="ritual-container">
+                                ${t.rituals.map(r => `
+                                    <div class="ritual-row ${r.active ? 'ritual-active' : ''}">
+                                        <div style="display:flex; align-items:center;">
+                                            ${r.active ? '<span class="status-dot"></span>' : ''}
+                                            <span style="font-weight:600;">${r.name}</span>
+                                        </div>
+                                        <span style="font-family:Cinzel; color:var(--gold); font-weight:700;">${r.time}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-right">
+                        <h5 style="color:var(--gold); font-size:0.8rem; text-transform:uppercase">🏨 Stay</h5><p>${t.stay}</p><br>
+                        <h5 style="color:var(--gold); font-size:0.8rem; text-transform:uppercase">🍴 Dining</h5><p>${t.eat}</p><br>
+                        <div style="background:var(--royal); color:white; padding:25px; border-radius:15px; border-top:4px solid var(--saffron)">
+                            <h4 style="font-family:Cinzel; color:var(--saffron); margin-bottom:10px">Traveler's Wisdom</h4>
+                            <p style="font-size:0.8rem">👗 Traditional wear mandatory.</p>
+                            <p style="font-size:0.8rem; margin:8px 0">🚫 No electronics inside.</p>
+                            <p style="font-size:0.8rem; color:var(--saffron)">🆘 Helpline: 1800-425-3333</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('templeModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            this.setDay(1);
+        },
+
+        tab(el, view) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            ['over-view', 'plan-view', 'ritual-view'].forEach(v => document.getElementById(v).style.display = 'none');
+            document.getElementById(`${view}-view`).style.display = 'block';
+        },
+
+        setDay(num) {
+            document.querySelectorAll('.btn-toggle-day').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${num}day`).classList.add('active');
+            document.getElementById('itinerary-box').innerHTML = this.activeTemple.plan[num].map(p => `<div style="margin-bottom:15px; font-weight:500;">${p}</div>`).join('');
+        },
+
+        close() { document.getElementById('templeModal').style.display = 'none'; document.body.style.overflow = 'auto'; },
+        
+        filter() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const state = document.getElementById('stateFilter').value;
+            const filtered = this.data.filter(t => {
+                return t.name.toLowerCase().includes(search) && (state === "" || t.state === state);
+            });
+            this.renderGrid(filtered);
+        }
+    };
+    app.init();
+</script>
+</body>
+</html>
